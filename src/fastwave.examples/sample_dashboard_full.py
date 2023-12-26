@@ -27,7 +27,7 @@ async def show_cyan_dashboard(q: Q):
     q.page['meta'] = ui.meta_card(box='', layouts=[
         ui.layout(
             breakpoint='xs',
-            width='1200px',
+            width='100vw',
             zones=[
                 ui.zone('header', size='76px'),
                 ui.zone('body', size='1400px', direction=ui.ZoneDirection.ROW, zones=[
@@ -46,7 +46,7 @@ async def show_cyan_dashboard(q: Q):
         )
     ])
 
-    q.page['header'] = ui.header_card(box='header', title='H2O Wave Demo', subtitle='Cyan Dashboard',
+    q.page['header'] = ui.header_card(box='header', title='FastWave Demo', subtitle='H2O Wave - Cyan Dashboard',
                                       image='https://wave.h2o.ai/img/h2o-logo.svg',
                                       items=[ui.tabs(name='Dashboards', value='#dashboards/cyan', 
                                                      items=global_nav),])
