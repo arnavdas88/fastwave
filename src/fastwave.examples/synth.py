@@ -90,3 +90,4 @@ class FakePercent:
         if self.x >= self.max:
             self.x = self.min
         return self.x, (self.x - self.min) / (self.max - self.min)
+
