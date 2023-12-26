@@ -1,0 +1,9 @@
+pytest
+h2o-lightwave[web]
+h2o-wave
+fastapi
+jinja2
+uvicorn
+websockets
+faker
+psutil
