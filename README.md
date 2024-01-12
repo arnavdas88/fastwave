@@ -42,6 +42,24 @@ async def index():
 async def hello():
     return {"description": "The Hello World Page!!!"}
 ```
+H2O Wave takes `Q` as an argument,
+```diff
+from h2o_wave import Q, ui
+from fastapi import FastAPI
+from faker import Faker
+from fastwave import H2O_WaveUI, HandleAsync
+
+app = FastAPI()
+
+@app.get("/")
+async def index():
+    return {"description": "The Index Page!!!"}
+
+@app.get("/hello")
++ async def hello(q:Q):
+    return {"description": "The Hello World Page!!!"}
+```
+
 
 Now we can build our wave ui inside any of the routed `async` function. 
 ```diff
@@ -59,9 +77,7 @@ async def index():
     return {"description": "The Index Page!!!"}
 
 @app.get("/hello")
-- async def hello():
--     return {"description": "The Hello World Page!!!"}
-+ async def hello(q:Q):
+async def hello(q:Q):
 +     # The header shown on all the app's pages
 +     q.page['header'] = ui.header_card(
 +         box='1 1 5 1', title='Hello Wave',
@@ -79,6 +95,7 @@ async def index():
 + 
 +     # Save the page
 +     await q.page.save()
+-     return {"description": "The Hello World Page!!!"}
 ```
 
 Now we can add our `@H2O_WaveUI` decorator to represent that the async function `hello()` will return a `HandleAsync` from H2O Wave, instead of a regular PyDantic class.

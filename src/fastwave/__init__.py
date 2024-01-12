@@ -8,7 +8,6 @@ from fastapi.responses import HTMLResponse
 # Jinja Template Engine
 from jinja2 import Environment, FileSystemLoader
 
-
 from starlette.background import BackgroundTask
 
 from h2o_wave.server import HandleAsync, Query
@@ -46,7 +45,19 @@ class H2O_WaveUI:
         if not self.socket_built:
             self.app.websocket(self.socket_path)(self.socker_gen(func))
             self.socket_built = True
-        return self.callable_base_render
+
+        def static_callable_base():
+            return self.callable_base_render()
+        
+        # static_callable_base.__name__ = f"H2O Wave UI for {self.name}"
+        static_callable_base.__name__ = func.__name__
+        if func.__doc__ is None:
+            static_callable_base.__doc__  = f"H2O Wave UI for {self.name}. Served through the socket `{self.socket_path}`"
+        else:
+            static_callable_base.__doc__  = func.__doc__
+        static_callable_base.__module__ = func.__module__
+
+        return static_callable_base
 
     def callable_base_render(self, ):
         return HTMLResponse(template.render(wave_files=get_web_files(self.assets_path, True), data_wave_socket_url = self.socket_path))
