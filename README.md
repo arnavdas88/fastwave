@@ -4,6 +4,14 @@
 
 ### Build UIs faster, with h2o-wave and fastapi.
 
+FastAPI is a modern, fast (high-performance), web framework for building APIs with Python 3.8+ based on standard Python type hints.
+
+H2O Wave is a software stack for building beautiful, low-latency, realtime, browser-based applications and dashboards entirely in Python/R without using HTML, Javascript, or CSS.
+
+H2O Wave excels at capturing information from multiple sources and broadcasting them live over the web, letting you build and deploy realtime analytics with dramatically less effort.
+
+Combining the best, FastWave provides H2O Wave support in FastAPI.
+
 ### Installation
 Install locally using 
 ```sh
