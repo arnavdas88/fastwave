@@ -1,14 +1,16 @@
 # FastWave
-Build UIs faster, with h2o-wave and fastapi.
 
-# Installation
+<img src="imgs/FastWave - Cover.png" alt="FastWave logo">
 
+### Build UIs faster, with h2o-wave and fastapi.
+
+### Installation
 Install locally using 
 ```sh
-$ pip3 install -e .
+$ pip install git+https://github.com/arnavdas88/fastwave.git
 ```
 
-# Usage
+### Usage
 Starting with the very basic fastapi server,
 
 ```python
@@ -25,12 +27,12 @@ async def hello():
     return {"description": "The Hello World Page!!!"}
 ```
 
-We start with importing the necessary modules from h2o wave and fastwave,
-```diff
-+ from h2o_wave import Q, ui
-from fastapi import FastAPI
-+ from faker import Faker
-+ from fastwave import wave, wave_collector
+Can be modified as ,
+
+```python
+from fastapi import FastAPI, WebSocket
+from h2o_wave import Q
+from fastwave import wave, wave_collector
 
 app = FastAPI()
 
@@ -41,99 +43,33 @@ async def index():
 @app.get("/hello")
 async def hello():
     return {"description": "The Hello World Page!!!"}
-```
-H2O Wave takes `Q` as an argument,
-```diff
-from h2o_wave import Q, ui
-from fastapi import FastAPI
-from faker import Faker
-from fastwave import wave, wave_collector
 
-app = FastAPI()
-
-@app.get("/")
-async def index():
-    return {"description": "The Index Page!!!"}
-
-@app.get("/hello")
-+ async def hello(q:Q):
-    return {"description": "The Hello World Page!!!"}
-```
-
-
-Now we can build our wave ui inside any of the routed `async` function. 
-```diff
-from h2o_wave import Q, ui
-from fastapi import FastAPI
-from faker import Faker
-from fastwave import wave, wave_collector
-
-app = FastAPI()
-
-+ fake = Faker()
-
-@app.get("/")
-async def index():
-    return {"description": "The Index Page!!!"}
-
-@app.get("/hello")
-async def hello(q:Q):
-+     # The header shown on all the app's pages
-+     q.page['header'] = ui.header_card(
-+         box='1 1 5 1', title='Hello Wave',
-+         subtitle='Hello World example', 
-+         icon='WavingHand', color='card'
-+     )
-+ 
-+     # The main card of the app
-+     q.page['main'] = ui.form_card(
-+         box='1 2 5 4',
-+         items=[
-+             ui.text(content=fake.paragraph(nb_sentences=5, variable_nb_sentences=False)) for _ in range(10)
-+         ]
-+     )
-+ 
-+     # Save the page
-+     await q.page.save()
--     return {"description": "The Hello World Page!!!"}
-```
-
-Now we can add our `@wave` decorator to represent that the async function `hello()` will return a transformed handle. This decorator needed to be added for ecery fastapi routes. Atlast, `wave_collector(app)` is needed (only once), which acts as an instruction for the additional endpoints and completing the necessary settings.
-```diff
-from h2o_wave import Q, ui
-from fastapi import FastAPI
-from faker import Faker
-from fastwave import wave, wave_collector
-
-app = FastAPI()
-
-fake = Faker()
-
-@app.get("/")
-async def index():
-    return {"description": "The Index Page!!!"}
-
-@app.get("/hello")
-+ @wave
-async def hello(q:Q):
-    # The header shown on all the app's pages
-    q.page['header'] = ui.header_card(
-        box='1 1 5 1', title='Hello Wave',
-        subtitle='Hello World example', 
-        icon='WavingHand', color='card'
-    )
-
-    # The main card of the app
-    q.page['main'] = ui.form_card(
-        box='1 2 5 4',
-        items=[
-            ui.text(content=fake.paragraph(nb_sentences=5, variable_nb_sentences=False)) for _ in range(10)
-        ]
-    )
-
-    # Save the page
+@app.get("/ui_1/{title}")
+@wave
+async def hello(title: str, sock: WebSocket, q: Q):
+    # ... H2O Wave UI Code ...
     await q.page.save()
 
-+ wave_collector(app)
+
+@app.get("/ui_2")
+@wave
+async def hello(q: Q):
+    # ... H2O Wave UI Code ...
+    await q.page.save()
+
+wave_collector(app)
 ```
 
+And it will render the `ui_1` and `ui_2` in the defined endpoint.
+
+### Structure
+
+
+A practical working implementation of FastWave, looks like,
+<img src="imgs/FastWave - Code FastAPI Wave.png" alt="FastWave FastAPI & Wave Segments">
+
+The Schema follows,
+<img src="imgs/FastWave - Code Example.png" alt="FastWave Code Schema">
+
+### License
+FastWave is licensed under the MIT License.
