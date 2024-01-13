@@ -6,7 +6,7 @@ from h2o_wave import Q, ui
 # FaseAPI
 from fastapi import FastAPI
 
-from fastwave import H2O_WaveUI, HandleAsync
+from fastwave import wave, wave_collector
 
 # FastAPI boilerplate.
 app = FastAPI()
@@ -47,7 +47,7 @@ async def show_notification(q: Q):
     await q.page.save()
 
 @app.get('/toolbar/')
-@H2O_WaveUI(app, name="toolbar")
+@wave
 async def serve(q: Q):
     # Unimportant, draw initial UI.
     if not q.client.initialized:
@@ -75,3 +75,5 @@ async def serve(q: Q):
         q.page['meta'].notification_bar = None
 
     await q.page.save()
+
+wave_collector(app)

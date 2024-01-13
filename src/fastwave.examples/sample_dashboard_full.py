@@ -5,7 +5,7 @@ from h2o_wave import ui
 
 from fastapi import FastAPI
 from faker import Faker
-from fastwave import H2O_WaveUI, HandleAsync
+from fastwave import wave, wave_collector
 
 app = FastAPI()
 
@@ -22,7 +22,7 @@ global_nav = [
 ]
 
 @app.get("/")
-@H2O_WaveUI(app, 'index')
+@wave
 async def show_cyan_dashboard(q: Q):
     q.page['meta'] = ui.meta_card(box='', layouts=[
         ui.layout(
@@ -197,3 +197,5 @@ async def show_cyan_dashboard(q: Q):
     q.page['footer'] = ui.footer_card(box='footer', caption='(c) 2021 H2O.ai. All rights reserved.')
 
     await q.page.save()
+
+wave_collector(app)

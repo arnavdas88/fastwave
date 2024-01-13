@@ -5,7 +5,7 @@ import psutil
 import speedtest # speedtest-cli
 
 from fastapi import FastAPI
-from fastwave import H2O_WaveUI, HandleAsync
+from fastwave import wave, wave_collector
 
 app = FastAPI()
 
@@ -16,7 +16,7 @@ def bytes_to_mb(b):
     return int(b / MB)
 
 @app.get("/")
-@H2O_WaveUI(app, 'index')
+@wave
 async def show_cyan_dashboard(q: Q):
 
     cpu_card = q.page.add('cpu_stats', ui.small_series_stat_card(
@@ -169,3 +169,5 @@ async def show_cyan_dashboard(q: Q):
 
         await q.page.save()
         time.sleep(1)
+
+wave_collector(app)

@@ -1,19 +1,17 @@
+from fastapi import APIRouter, FastAPI
 from h2o_wave import Q, ui
-from fastapi import FastAPI
-from faker import Faker
 from fastwave import wave, wave_collector
 
 
-
 app = FastAPI()
+router = APIRouter()
 
-fake = Faker()
 
-@app.get("/")
-async def index():
-    return {"description": "The Index Page!!!"}
+@router.get("/users/", tags=["users"])
+async def read_users():
+    return [{"username": "Rick"}, {"username": "Morty"}]
 
-@app.get("/hello")
+@router.get("/hello/", tags=["users"])
 @wave
 async def hello(q:Q):
     # The header shown on all the app's pages
@@ -27,11 +25,13 @@ async def hello(q:Q):
     q.page['main'] = ui.form_card(
         box='1 2 5 4',
         items=[
-            ui.text(content=fake.paragraph(nb_sentences=5, variable_nb_sentences=False)) for _ in range(10)
+            ui.text(content="The quick brown fox jumps over the lazy dog") for _ in range(10)
         ]
     )
 
     # Save the page
     await q.page.save()
 
+
+app.include_router(router)
 wave_collector(app)

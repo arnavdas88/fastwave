@@ -13,7 +13,7 @@ from h2o_wave import Q, ui, data
 from faker import Faker
 from synth import FakeCategoricalSeries
 
-from fastwave import H2O_WaveUI, HandleAsync
+from fastwave import wave, wave_collector
 
 # FastAPI boilerplate.
 app = FastAPI()
@@ -25,7 +25,7 @@ val = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 pc  = [2,2,2,3,4,4,4,6,5,6,6,7,7,10,12,11,9,7,7,7]
 
 @app.get('/toolbar/')
-@H2O_WaveUI(app, name="toolbar")
+@wave
 async def toolbar(q: Q):
 
     q.page['meta'] = ui.meta_card(box='', layouts=[
@@ -146,3 +146,5 @@ async def toolbar(q: Q):
     ])
 
     await q.page.save()
+
+wave_collector(app)

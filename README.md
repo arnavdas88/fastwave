@@ -30,7 +30,7 @@ We start with importing the necessary modules from h2o wave and fastwave,
 + from h2o_wave import Q, ui
 from fastapi import FastAPI
 + from faker import Faker
-+ from fastwave import H2O_WaveUI, HandleAsync
++ from fastwave import wave, wave_collector
 
 app = FastAPI()
 
@@ -47,7 +47,7 @@ H2O Wave takes `Q` as an argument,
 from h2o_wave import Q, ui
 from fastapi import FastAPI
 from faker import Faker
-from fastwave import H2O_WaveUI, HandleAsync
+from fastwave import wave, wave_collector
 
 app = FastAPI()
 
@@ -66,7 +66,7 @@ Now we can build our wave ui inside any of the routed `async` function.
 from h2o_wave import Q, ui
 from fastapi import FastAPI
 from faker import Faker
-from fastwave import H2O_WaveUI, HandleAsync
+from fastwave import wave, wave_collector
 
 app = FastAPI()
 
@@ -98,12 +98,12 @@ async def hello(q:Q):
 -     return {"description": "The Hello World Page!!!"}
 ```
 
-Now we can add our `@H2O_WaveUI` decorator to represent that the async function `hello()` will return a `HandleAsync` from H2O Wave, instead of a regular PyDantic class.
+Now we can add our `@wave` decorator to represent that the async function `hello()` will return a transformed handle. This decorator needed to be added for ecery fastapi routes. Atlast, `wave_collector(app)` is needed (only once), which acts as an instruction for the additional endpoints and completing the necessary settings.
 ```diff
 from h2o_wave import Q, ui
 from fastapi import FastAPI
 from faker import Faker
-from fastwave import H2O_WaveUI, HandleAsync
+from fastwave import wave, wave_collector
 
 app = FastAPI()
 
@@ -114,7 +114,7 @@ async def index():
     return {"description": "The Index Page!!!"}
 
 @app.get("/hello")
-+ @H2O_WaveUI(app, name="hello")
++ @wave
 async def hello(q:Q):
     # The header shown on all the app's pages
     q.page['header'] = ui.header_card(
@@ -133,5 +133,7 @@ async def hello(q:Q):
 
     # Save the page
     await q.page.save()
+
++ wave_collector(app)
 ```
 
