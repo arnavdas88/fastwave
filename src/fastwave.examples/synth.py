@@ -7,7 +7,11 @@ class FakeSeries:
         self.min = min
         self.max = max
         self.variation = variation
-        self.start = random.randint(int(min * 100), int(max * 100)) / 100 if start is None else start
+        self.start = (
+            random.randint(int(min * 100), int(max * 100)) / 100
+            if start is None
+            else start
+        )
         self.x = self.start
 
     def next(self):
@@ -21,7 +25,9 @@ class FakeSeries:
 
 
 class FakeTimeSeries:
-    def __init__(self, min=0.0, max=100.0, variation=10.0, start: int = None, delta_days=1):
+    def __init__(
+        self, min=0.0, max=100.0, variation=10.0, start: int = None, delta_days=1
+    ):
         self.series = FakeSeries(min, max, variation, start)
         self.delta_days = delta_days
         self.date = datetime.datetime.utcnow() - datetime.timedelta(days=10 * 365)
@@ -29,12 +35,23 @@ class FakeTimeSeries:
     def next(self):
         x, dx = self.series.next()
         self.date = self.date + datetime.timedelta(days=self.delta_days)
-        return self.date.isoformat() + 'Z', x, dx
+        return self.date.isoformat() + "Z", x, dx
 
 
 class FakeMultiTimeSeries:
-    def __init__(self, min=0.0, max=100.0, variation=10.0, start: int = None, delta_days=1, groups=5):
-        self.series = [(f'G{c + 1}', FakeTimeSeries(min, max, variation, start, delta_days)) for c in range(groups)]
+    def __init__(
+        self,
+        min=0.0,
+        max=100.0,
+        variation=10.0,
+        start: int = None,
+        delta_days=1,
+        groups=5,
+    ):
+        self.series = [
+            (f"G{c + 1}", FakeTimeSeries(min, max, variation, start, delta_days))
+            for c in range(groups)
+        ]
 
     def next(self):
         data = []
@@ -52,12 +69,15 @@ class FakeCategoricalSeries:
     def next(self):
         x, dx = self.series.next()
         self.i += 1
-        return f'C{self.i}', x, dx
+        return f"C{self.i}", x, dx
 
 
 class FakeMultiCategoricalSeries:
     def __init__(self, min=0.0, max=100.0, variation=10.0, start: int = None, groups=5):
-        self.series = [(f'G{c + 1}', FakeCategoricalSeries(min, max, variation, start)) for c in range(groups)]
+        self.series = [
+            (f"G{c + 1}", FakeCategoricalSeries(min, max, variation, start))
+            for c in range(groups)
+        ]
 
     def next(self):
         data = []
@@ -90,4 +110,3 @@ class FakePercent:
         if self.x >= self.max:
             self.x = self.min
         return self.x, (self.x - self.min) / (self.max - self.min)
-

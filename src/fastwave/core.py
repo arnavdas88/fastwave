@@ -1,37 +1,46 @@
-import pathlib, typing, inspect
+import inspect
+import pathlib
+import typing
 
 # FaseAPI
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.staticfiles import StaticFiles
-from fastapi.types import DecoratedCallable
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.types import DecoratedCallable
+from h2o_lightwave import Q, data
+from h2o_lightwave.server import _App
+from h2o_wave.server import HandleAsync, Query
 
 # Jinja Template Engine
 from jinja2 import Environment, FileSystemLoader
-
 from starlette.background import BackgroundTask
 
-from h2o_wave.server import HandleAsync, Query
+from fastwave.utils import (
+    change_signature,
+    get_parameters,
+    get_web_files,
+    takes_websocket_as_input_parameter,
+    type_support_pydantic,
+)
 
-from h2o_lightwave import data, Q
-from h2o_lightwave.server import _App
-
-from fastwave.utils import get_web_files, change_signature, type_support_pydantic, get_parameters, takes_websocket_as_input_parameter
-
-fastwave_web_dir = str(pathlib.Path(__file__).parent / 'www')
+fastwave_web_dir = str(pathlib.Path(__file__).parent / "www")
 
 # Prepare our custom index.html and inject required JS files.
 # Jinja is used for convenience, you can use any templating engine.
-template = Environment(loader=FileSystemLoader(fastwave_web_dir)).get_template("index_template.html")
+template = Environment(loader=FileSystemLoader(fastwave_web_dir)).get_template(
+    "index_template.html"
+)
+
 
 class SafeDict(dict):
     # https://stackoverflow.com/a/17215533
     def __missing__(self, key):
-        return '{' + key + '}'
+        return "{" + key + "}"
+
 
 class WaveFunc:
-    def __init__(self, func : typing.Callable):
+    def __init__(self, func: typing.Callable):
         self.name = func.__name__
         self.func = func
         self.assets_path: str = "/assets"
@@ -40,40 +49,58 @@ class WaveFunc:
         self.ws: typing.Callable = None
         self.html_render: typing.Callable = None
 
-    def __call__(self, ):
+    def __call__(
+        self,
+    ):
         pass
 
-    def to_html_render(self, ):
+    def to_html_render(
+        self,
+    ):
         def wrapper(*args, **kwargs):
-            return HTMLResponse(template.render(wave_files=get_web_files(self.assets_path, True), data_wave_socket_url = self.socket_path.format_map(SafeDict(**kwargs))))
+            return HTMLResponse(
+                template.render(
+                    wave_files=get_web_files(self.assets_path, True),
+                    data_wave_socket_url=self.socket_path.format_map(
+                        SafeDict(**kwargs)
+                    ),
+                )
+            )
 
         # Override function name
         wrapper.__name__ = self.func.__name__
 
         # Override function documentation
         if self.func.__doc__ is None:
-            wrapper.__doc__  = f"H2O Wave UI for {self.func.__name__}. Served through the socket (Possibly: `{self.socket_path}`)"
+            wrapper.__doc__ = f"H2O Wave UI for {self.func.__name__}. Served through the socket (Possibly: `{self.socket_path}`)"
         else:
-            wrapper.__doc__  = self.func.__doc__
-        
+            wrapper.__doc__ = self.func.__doc__
+
         # Override function's parent module
         wrapper.__module__ = self.func.__module__
 
         # Override function's param signature, safely
-        func_parameters, allowed_parameters = get_parameters(self.func, exclude_types = [WebSocket])
+        func_parameters, allowed_parameters = get_parameters(
+            self.func, exclude_types=[WebSocket]
+        )
         self.html_render = change_signature(wrapper, allowed_parameters)
 
         return self.html_render
 
-    def to_ws_worker(self, ):
+    def to_ws_worker(
+        self,
+    ):
         async def ws(ws: WebSocket, *args, **kwargs):
             try:
+
                 def wrapper(q: Q):
-                    ws_parameter_name =  takes_websocket_as_input_parameter(self.func)
+                    ws_parameter_name = takes_websocket_as_input_parameter(self.func)
                     if ws_parameter_name:
-                        return self.func(q = q, *args, **kwargs, **{ws_parameter_name: ws})
+                        return self.func(
+                            q=q, *args, **kwargs, **{ws_parameter_name: ws}
+                        )
                     else:
-                        return self.func(q = q, *args, **kwargs)
+                        return self.func(q=q, *args, **kwargs)
 
                 await ws.accept()
 
@@ -85,14 +112,17 @@ class WaveFunc:
                 # OR
                 await _App(wrapper, ws.send_text, ws.receive_text)._run()
 
-
                 await ws.close()
             except WebSocketDisconnect:
-                print('Client disconnected')
+                print("Client disconnected")
 
         # Override function's param signature, safely
-        _, allowed_parameters_original = get_parameters(self.func, exclude_types = [Request, WebSocket])
+        _, allowed_parameters_original = get_parameters(
+            self.func, exclude_types=[Request, WebSocket]
+        )
         wrapped_annotations = ws.__annotations__
-        self.ws = change_signature(ws, set(allowed_parameters_original + list(wrapped_annotations.items())))
+        self.ws = change_signature(
+            ws, set(allowed_parameters_original + list(wrapped_annotations.items()))
+        )
 
         return self.ws

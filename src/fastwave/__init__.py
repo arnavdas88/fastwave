@@ -1,21 +1,20 @@
-import pathlib, typing
+import pathlib
+import typing
 
 # FaseAPI
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.types import DecoratedCallable
-
 from h2o_lightwave_web import web_directory
-
-from fastwave.utils import search_if_route_exist, select_route_from_app_by_name
-
 
 from fastwave.context import Global
 from fastwave.core import WaveFunc
+from fastwave.utils import search_if_route_exist, select_route_from_app_by_name
 
 # Define a global buffer to maintain a Wave UI registry
 context = Global()
 context.registry: typing.List[WaveFunc] = []
+
 
 def wave(func: typing.Union[typing.Callable, DecoratedCallable]):
     # Build a WaveFunc object
@@ -25,17 +24,17 @@ def wave(func: typing.Union[typing.Callable, DecoratedCallable]):
     # Returns the HTML render of the ui
     return _f.to_html_render()
 
-def wave_collector(app: FastAPI):
 
+def wave_collector(app: FastAPI):
     # For all WaveFunc object in the global buffer
     for _f in context.registry:
         # Assign WebSocket Path
         route = select_route_from_app_by_name(app, _f.name)
-        if route.path.startswith('/'):
+        if route.path.startswith("/"):
             _f.socket_path = "/ws" + route.path
         else:
             _f.socket_path = "/ws/" + route.path
-        
+
         # Register the WebSocket into FastAPI
         app.websocket(_f.socket_path)(_f.to_ws_worker())
 
