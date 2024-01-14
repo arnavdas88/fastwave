@@ -24,49 +24,42 @@ setup(
     packages=find_packages(where="src"),
     include_package_data=True,
     install_requires=[
+        # Testing and Linting Automation
+        "nox",
         # Python test
         "pytest",
-
         # H2O wave UI framework
         "h2o-wave",
         "h2o-lightwave[web]",
-
         # FastAPI
         "fastapi",
         "jinja2",
         "uvicorn",
         "websockets",
-
-        # Data for examples 
+        # Data for examples
         "faker",
         "psutil",
     ],
     classifiers=[
         # License
         "License :: OSI Approved :: MIT License",
-        
         # Project Maturity
         "Development Status :: 3 - Alpha",
-        
         # Topic
         "Topic :: Communications",
-        
         # Compatibility
         "Operating System :: Microsoft :: Windows",
         "Operating System :: MacOS",
         "Operating System :: POSIX :: Linux",
-        
         # Python Version
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
-
         # Intended Audience
         "Intended Audience :: Developers",
         "Intended Audience :: Information Technology",
-
         # Framework
         "Framework :: FastAPI",
     ],
