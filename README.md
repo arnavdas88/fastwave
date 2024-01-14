@@ -54,14 +54,14 @@ async def hello():
 
 @app.get("/ui_1/{title}")
 @wave
-async def hello(title: str, sock: WebSocket, q: Q):
+async def ui_1(title: str, sock: WebSocket, q: Q):
     # ... H2O Wave UI Code ...
     await q.page.save()
 
 
 @app.get("/ui_2")
 @wave
-async def hello(q: Q):
+async def ui_2(q: Q):
     # ... H2O Wave UI Code ...
     await q.page.save()
 
