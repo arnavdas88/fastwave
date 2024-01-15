@@ -32,7 +32,7 @@ template = Environment(loader=FileSystemLoader(fastwave_web_dir)).get_template(
     "index_template.html"
 )
 
-
+# Custom dictionary to safely format strings for rendering templates
 class SafeDict(dict):
     # https://stackoverflow.com/a/17215533
     def __missing__(self, key):
@@ -46,6 +46,7 @@ class WaveFunc:
         self.assets_path: str = "/assets"
         self.socket_path: str = f"/ws/{self.func.__name__}/"
 
+        # Initialize placeholders for WebSocket and HTML rendering handles
         self.ws: typing.Callable = None
         self.html_render: typing.Callable = None
 
@@ -57,6 +58,7 @@ class WaveFunc:
     def to_html_render(
         self,
     ):
+        # Create and return an HTML rendering handle for the WaveFunc object
         def wrapper(*args, **kwargs):
             return HTMLResponse(
                 template.render(
@@ -90,9 +92,10 @@ class WaveFunc:
     def to_ws_worker(
         self,
     ):
+        # Create and return a WebSocket worker handle for the WaveFunc object
         async def ws(ws: WebSocket, *args, **kwargs):
             try:
-
+                # Define a wrapper function to handle WebSocket communication
                 def wrapper(q: Q):
                     ws_parameter_name = takes_websocket_as_input_parameter(self.func)
                     if ws_parameter_name:
