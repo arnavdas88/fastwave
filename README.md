@@ -21,6 +21,7 @@ __FastWave, bridges the gap, bringing H2O Wave support to the FastAPI world.__
 - [ ] Enable accessing request parameters when using FastWave
 - [ ] Documentation
 - [ ] Unit Tests
+- [ ] Dockerized Enviornment
 
 ### Installation : Ride the Wave Locally
 Install the FastWave experience locally with a simple command:
@@ -98,6 +99,51 @@ The @wave decorator is the secret sauce. It registers a separate but unique rend
 When wave_collector is called at the end, it unleashes the magic. It registers all the H2O Wave handles from the global registry to FastAPI, bringing the UIs to life.
 
 <img src="imgs/FastWave - Working.png" alt="How FastWave Works?">
+
+### Example : A Fast Wave
+
+```python
+# H2O Imports
+from h2o_lightwave import ui, data, Q
+# FastAPI Imports
+from fastapi import FastAPI, WebSocket
+# FastWave
+from fastwave import wave, wave_collector
+
+# Initializing the FastAPI server
+app = FastAPI()
+
+# Define a global variable `bean_count` to
+# be rendered
+global bean_count
+bean_count = 0
+
+@app.get("/{name}")
+@wave
+async def show_cyan_dashboard(name:str, sock:WebSocket, q: Q):
+    global bean_count
+    # Was the 'increment' button clicked?
+    if q.args.increment:
+        bean_count += 1
+
+    # Display a form on the page
+    q.page['beans'] = ui.form_card(
+        box='1 1 5 2',
+        items=[
+            ui.text_xl(f'{name} Beans!'),
+            ui.button(name='increment', label=f'{name} has {bean_count} beans'),
+        ],
+    )
+    # Save the page
+    await q.page.save()
+
+# Make sure to collect the `WaveFunc` using
+# this command. This will register the original
+# ui renderer
+wave_collector(app)
+```
+
+<img src="imgs/FastWave - Minimalist Example Render.png" alt="FastWave Minimalist Render Example">
 
 ### Contributing : Dive In
 
