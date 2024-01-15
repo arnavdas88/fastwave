@@ -68,7 +68,7 @@ async def ui_2(q: Q):
 wave_collector(app)
 ```
 
-And it will render the `ui_1` and `ui_2` in the defined endpoint.
+And it will render the `ui_1` and `ui_2` in the respective endpoint.
 
 ### Structure
 
@@ -78,6 +78,9 @@ A practical working implementation of FastWave, looks like,
 
 The Schema follows,
 <img src="imgs/FastWave - Code Example.png" alt="FastWave Code Schema">
+
+How FastWave works?
+<img src="imgs/FastWave - Working.png" alt="How FastWave Works?">
 
 ### License
 FastWave is licensed under the MIT License.
