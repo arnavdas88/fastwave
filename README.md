@@ -10,15 +10,25 @@ H2O Wave is a software stack for building beautiful, low-latency, realtime, brow
 
 H2O Wave excels at capturing information from multiple sources and broadcasting them live over the web, letting you build and deploy realtime analytics with dramatically less effort.
 
-Combining the best, FastWave provides H2O Wave support in FastAPI.
+__FastWave, bridges the gap, bringing H2O Wave support to the FastAPI world.__
 
-### Installation
+### Todo List: Planning the next in Wave
+
+- [x] Implement decorator-based setup
+- [x] Provide illustrative examples
+- [x] Enable accessing path parameters when using FastWave
+- [ ] Enable accessing query parameters when using FastWave
+- [ ] Enable accessing request parameters when using FastWave
+- [ ] Documentation
+- [ ] Unit Tests
+
+### Installation : Ride the Wave Locally
 Install the FastWave experience locally with a simple command:
 ```sh
 $ pip install git+https://github.com/arnavdas88/fastwave.git
 ```
 
-### Usage
+### Usage : Catch the Wave in Your Code
 Starting with the very basic fastapi server,
 
 ```python
@@ -70,12 +80,14 @@ wave_collector(app)
 
 And it will render the `ui_1` and `ui_2` in the respective endpoint.
 
-### Structure
+### Structure : The FastWave Blueprint
 
 A practical FastWave implementation looks like a work of art, with FastAPI and Wave segments elegantly intertwined:
-<img src="imgs/FastWave - Code FastAPI Wave.png" alt="FastWave FastAPI & Wave Segments">
+
+<img src="imgs/FastWave - Code FastAPI Wave.png" alt="FastWave FastAPI & Wave Segments" width="63%">
 
 The code schema follows a logical and clean structure:
+
 <img src="imgs/FastWave - Code Example.png" alt="FastWave Code Schema">
 
 ### How FastWave Works: Behind the Scenes
@@ -87,9 +99,9 @@ When wave_collector is called at the end, it unleashes the magic. It registers a
 
 <img src="imgs/FastWave - Working.png" alt="How FastWave Works?">
 
-### Contributing
+### Contributing : Dive In
 
 We welcome contributions from the community! To contribute to FastWave, follow the guidelines in the [Contribution](CONTRIBUTING.md) Guide. Your contributions help make FastWave even more awesome! 🚀
 
-### License
+### License : FastWave is All Yours
 FastWave is licensed under the MIT License, giving you the freedom to ride the code wave however you like. 🏄‍♂️
