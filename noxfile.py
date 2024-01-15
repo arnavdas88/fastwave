@@ -14,3 +14,8 @@ def format(session):
 
     session.run("isort", "--profile=black", *SOURCE_FILES)
     session.run("black", "--target-version=py39", *SOURCE_FILES)
+
+
+@nox.session()
+def tests(session):
+    pass
